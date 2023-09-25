@@ -1,57 +1,60 @@
-class TreeNode<T> {
-    data: T;
-    left: TreeNode<T> | null = null;
-    right: TreeNode<T> | null = null;
-    constructor(data: T) { this.data = data }
+class Subtree {
+    value: number;
+    leftNode: Subtree | null = null;
+    rightNode: Subtree | null = null;
+
+    constructor (value: number) {
+        this.value = value;
+    }
 }
 
-class Tree<T> {
-    private _root: TreeNode<T> | null;
+class Tree {
+    root: Subtree | null;
 
-    constructor(data: T[]) {
-        this._root = this.build(data, 0, data.length - 1);
+    constructor (data: number[]) {
+        this.root = this.build(data, 0, data.length - 1);
     }
 
-    build(data: T[], first: number, last: number) {
-        if (first > last) return null;
-        let middle: number = (first + last) / 2;
-        let newNode = new TreeNode(data[middle]);
-        newNode.left = this.build(data, first, middle - 1);
-        newNode.right = this.build(data, middle + 1, last);
+    build (array: number[], leftIndex: number, rightIndex: number) {
+        // stop condition: if the leftmost index surpasses the right
+        if (leftIndex > rightIndex) return null;
+
+        // get the center of the array
+        const middleIndex: number = Math.ceil((leftIndex + rightIndex) / 2);
+        // make it the "root" of this subtree
+        const newNode = new Subtree(array[middleIndex]);
+
+        // make new subtrees by recursing into each half of the array
+        newNode.leftNode = this.build(array, leftIndex, middleIndex - 1);
+        newNode.rightNode = this.build(array, middleIndex + 1, rightIndex);
+
+        // by the end, the subtrees will conjoin into a single-rooted tree
         return newNode;
     }
 
-    search(data: T, node = this._root): null | TreeNode<T> {
-        if (node!.data === data) return node;
-        if (data > node!.data && node!.right) 
-            return this.search(data, node!.right);
-        if (data < node!.data && node!.left) 
-            return this.search(data, node!.left);
-        return null;
-    }
+    prettyPrint (node = this.root, prefix = "", isLeft = true) {
+        if (!node) return;
 
-    insert(data: T, node = this._root) {
-        if (!node) node = new TreeNode(data);
-        if (data > node!.data) 
-            node.right = this.insert(data, node.right);
-        if (data < node!.data) 
-            node.left = this.insert(data, node.left);
-        return node;
-    }
+        if (node.rightNode)
+            this.prettyPrint(node.rightNode, `${prefix}${isLeft ? "│   " : "    "}`, false);
 
-    print(node = this._root, prefix = "", isLeft = true) {
-        if (node === null) {
-            return;
-        }
-        if (node.right !== null) {
-            this.print(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
-        }
-        console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-        if (node.left !== null) {
-            this.print(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
-        }
-    };
+        console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.value}`);
+
+        if (node.leftNode)
+            this.prettyPrint(node.leftNode, `${prefix}${isLeft ? "    " : "│   "}`, true);
+    }
 }
 
-const tree = new Tree([1, 2, 3, 4, 5, 6, 7]);
-tree.print();
+// generate an array of random values
+const data = new Array(15) // empties
+                 .fill(1)  // set all to "1"
+                 .map(v => v * Math.ceil(Math.random() * 100)) // multiply each by random number
+                 .sort((a, b) => a - b) // sort ascending
+                 .filter(function(value, index, array) {
+                    return !index || value != array[index - 1]; // filter out dupes
+                 });
+
+console.log(data);
+
+const myTree = new Tree(data);
+myTree.prettyPrint();
