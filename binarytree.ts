@@ -93,6 +93,13 @@ class Tree {
         }
     }
 
+    find (value: number, node = this.root): Subtree | null {
+        if (!node) return null;
+        else if (value > node.value) return this.find(value, node.rightNode);
+        else if (value < node.value) return this.find(value, node.leftNode);
+        return node;
+    }
+
     prettyPrint (node = this.root, prefix = "", isLeft = true) {
         if (!node) return;
 
@@ -121,21 +128,28 @@ console.log(data);
 
 const myTree = new Tree(data);
 
-// add() testing:
-// generate random nonexisting number to add
-let newNumber = Math.ceil(Math.random() * MAX);
-while (data.includes(newNumber)) newNumber = Math.ceil(Math.random() * MAX);
-myTree.prettyPrint();
-console.log(`Adding new number "${newNumber}"...`);
-myTree.add(newNumber);
-myTree.prettyPrint();
+// // add() testing:
+// // generate random nonexisting number to add
+// let newNumber = Math.ceil(Math.random() * MAX);
+// while (data.includes(newNumber)) newNumber = Math.ceil(Math.random() * MAX);
+// myTree.prettyPrint();
+// console.log(`Adding new number "${newNumber}"...`);
+// myTree.add(newNumber);
+// myTree.prettyPrint();
 
-console.log();
+// console.log();
 
-// remove() testing:
-// generate random existing number to remove
-let deleteNumber = data[Math.floor(Math.random() * data.length)];
+// // remove() testing:
+// // generate random existing number to remove
+// let deleteNumber = data[Math.floor(Math.random() * data.length)];
+// myTree.prettyPrint();
+// console.log(`Deleting number "${deleteNumber}"...`);
+// myTree.remove(deleteNumber);
+// myTree.prettyPrint();
+
+// find() testing:
+// generate random existing number to find
+let findNumber = data[Math.floor(Math.random() * data.length)];
 myTree.prettyPrint();
-console.log(`Deleting number "${deleteNumber}"...`);
-myTree.remove(deleteNumber);
-myTree.prettyPrint();
+console.log(`Finding number "${findNumber}"...`);
+console.log(myTree.find(findNumber));
