@@ -148,6 +148,33 @@ class Tree {
         }
     }
 
+    levelOrder() {
+        const queue: (TreeNode | null)[] = [];
+        queue.push(this.root);
+        const visited = [];
+
+        while (queue.length > 0) {
+            let currentNode = queue.shift();
+
+            if (!currentNode) {
+                break;
+            } else {
+                visited.push(currentNode.value);
+
+                if (currentNode.leftNode) {
+                    queue.push(currentNode.leftNode);
+                }
+
+                if (currentNode.rightNode) {
+                    queue.push(currentNode.rightNode)
+                }
+            }
+        }
+
+        return visited;
+        // https://blog.bitsrc.io/breadth-first-tree-traversal-explained-simply-for-binary-and-non-binary-trees-ca80dce038dc
+    }
+
     prettyPrint (node = this.root, prefix = "", isLeft = true) {
         if (!node) return;
 
@@ -175,7 +202,4 @@ const data = new Array(8).fill(1)
 console.log(data);
 const myTree = new Tree(data);
 myTree.prettyPrint();
-
-console.log(myTree.inOrder());
-console.log(myTree.preOrder());
-console.log(myTree.postOrder());
+console.log(myTree.levelOrder());
