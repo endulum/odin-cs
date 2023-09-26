@@ -175,6 +175,35 @@ class Tree {
         // https://blog.bitsrc.io/breadth-first-tree-traversal-explained-simply-for-binary-and-non-binary-trees-ca80dce038dc
     }
 
+    height(node: TreeNode | null) {
+        if (!node) {
+            return -1;
+        } else {
+            const leftHeight: number = this.height(node.leftNode);
+            const rightHeight: number = this.height(node.rightNode);
+            const height = Math.max(leftHeight, rightHeight) + 1;
+            return height;
+        }
+    }
+
+    depth(node: TreeNode | null, root: TreeNode | null = this.root) {
+        if (!root) {
+            return -1;
+        } else {
+            let depth: number = -1;
+
+            if (
+                (node === root) ||
+                (depth = this.depth(node, root.leftNode)) >= 0 ||
+                (depth = this.depth(node, root.rightNode)) >= 0
+            ) {
+                return depth + 1
+            }
+
+            return depth;
+        }
+    }
+
     prettyPrint (node = this.root, prefix = "", isLeft = true) {
         if (!node) return;
 
@@ -192,7 +221,7 @@ class Tree {
 
 const MAX = 20;
 
-const data = new Array(8).fill(1)
+const data = new Array(30).fill(1)
                  .map(v => v * Math.ceil(Math.random() * MAX))
                  .sort((a, b) => a - b)
                  .filter(function(value, index, array) {
@@ -202,4 +231,11 @@ const data = new Array(8).fill(1)
 console.log(data);
 const myTree = new Tree(data);
 myTree.prettyPrint();
-console.log(myTree.levelOrder());
+
+// generate random existing number
+let dataPoint = data[Math.floor(Math.random() * data.length)];
+
+console.log(`Finding height of node ${dataPoint}...`);
+console.log(`The height is ${myTree.height(myTree.find(dataPoint))} edges.`);
+console.log(`Finding depth of node ${dataPoint}...`);
+console.log(`The depth is ${myTree.depth(myTree.find(dataPoint))} edges.`);
