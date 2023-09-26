@@ -94,6 +94,60 @@ class Tree {
         }
     }
 
+    inOrder(callback: Function | null = null, node = this.root) {
+        if (node && callback) {
+            this.inOrder(callback, node.leftNode);
+            callback(node.value);
+            this.inOrder(callback, node.rightNode);
+        } else {
+            if (node) {
+                return [
+                    ...this.inOrder(null, node.leftNode),
+                    node.value,
+                    ...this.inOrder(null, node.rightNode)
+                ];
+            } else {
+                return [];
+            }
+        }
+    }
+
+    preOrder(callback: Function | null = null, node = this.root) {
+        if (node && callback) {
+            callback(node.value);
+            this.preOrder(callback, node.leftNode);
+            this.preOrder(callback, node.rightNode);
+        } else {
+            if (node) {
+                return [
+                    node.value,
+                    ...this.preOrder(null, node.leftNode),
+                    ...this.preOrder(null, node.rightNode)
+                ];
+            } else {
+                return [];
+            }
+        }
+    }
+
+    postOrder(callback: Function | null = null, node = this.root) {
+        if (node && callback) {
+            this.postOrder(callback, node.leftNode);
+            this.postOrder(callback, node.rightNode);
+            callback(node.value);
+        } else {
+            if (node) {
+                return [
+                    ...this.postOrder(null, node.leftNode),
+                    ...this.postOrder(null, node.rightNode),
+                    node.value
+                ];
+            } else {
+                return [];
+            }
+        }
+    }
+
     prettyPrint (node = this.root, prefix = "", isLeft = true) {
         if (!node) return;
 
@@ -111,7 +165,7 @@ class Tree {
 
 const MAX = 20;
 
-const data = new Array(10).fill(1)
+const data = new Array(8).fill(1)
                  .map(v => v * Math.ceil(Math.random() * MAX))
                  .sort((a, b) => a - b)
                  .filter(function(value, index, array) {
@@ -119,6 +173,9 @@ const data = new Array(10).fill(1)
                  });
 
 console.log(data);
-
 const myTree = new Tree(data);
 myTree.prettyPrint();
+
+console.log(myTree.inOrder());
+console.log(myTree.preOrder());
+console.log(myTree.postOrder());
