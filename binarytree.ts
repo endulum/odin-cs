@@ -172,7 +172,6 @@ class Tree {
         }
 
         return visited;
-        // https://blog.bitsrc.io/breadth-first-tree-traversal-explained-simply-for-binary-and-non-binary-trees-ca80dce038dc
     }
 
     height(node: TreeNode | null) {
@@ -231,24 +230,12 @@ class Tree {
             this.root = this.build(data, 0, data.length - 1);
         }
     }
-
-    prettyPrint (node = this.root, prefix = "", isLeft = true) {
-        if (!node) return;
-
-        if (node.rightNode) {
-            this.prettyPrint(node.rightNode, `${prefix}${isLeft ? "│   " : "    "}`, false);
-        }
-
-        console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.value}`);
-
-        if (node.leftNode) {
-            this.prettyPrint(node.leftNode, `${prefix}${isLeft ? "    " : "│   "}`, true);
-        }
-    }
 }
 
+// number will be between 1 and 100
 const MAX = 100;
 
+// create an array of up to 10 unique numbers
 const data = new Array(10).fill(1)
                  .map(v => v * Math.ceil(Math.random() * MAX))
                  .sort((a, b) => a - b)
@@ -256,11 +243,22 @@ const data = new Array(10).fill(1)
                     return !index || value != array[index - 1];
                  });
 
-console.log(data);
-const myTree = new Tree(data);
-myTree.prettyPrint();
-console.log(myTree.isBalanced());
+// create the tree
+const tree = new Tree(data);
 
+function logIsBalanced() {
+    console.log(`The tree is ${tree.isBalanced() ? 'balanced' : 'not balanced'}`);
+}
+
+// confirm the tree's balance
+logIsBalanced();
+
+// print data in order, pre-order, and post-order
+console.log(tree.inOrder());
+console.log(tree.preOrder());
+console.log(tree.postOrder());
+
+// add random data
 const randomVals: number[] = [];
 let newNumber = Math.ceil(Math.random() * MAX);
 while (randomVals.length < 5) {
@@ -273,12 +271,19 @@ while (randomVals.length < 5) {
 console.log(`Adding values ${randomVals}...`);
 
 while (randomVals[0]) {
-    myTree.add(randomVals.pop());
+    tree.add(randomVals.pop());
 }
 
-myTree.prettyPrint();
-console.log(myTree.isBalanced());
+// confirm the tree's imbalance
+logIsBalanced();
 
-myTree.balance();
-myTree.prettyPrint();
-console.log(myTree.isBalanced());
+// rebalance
+tree.balance();
+
+// confirm the tree's balance
+logIsBalanced();
+
+// print data in order, pre-order, and post-order
+console.log(tree.inOrder());
+console.log(tree.preOrder());
+console.log(tree.postOrder());
