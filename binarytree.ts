@@ -223,6 +223,15 @@ class Tree {
         return false;
     }
 
+    balance() {
+        if (this.isBalanced()) {
+            return;
+        } else {
+            const data = this.inOrder();
+            this.root = this.build(data, 0, data.length - 1);
+        }
+    }
+
     prettyPrint (node = this.root, prefix = "", isLeft = true) {
         if (!node) return;
 
@@ -254,7 +263,7 @@ console.log(myTree.isBalanced());
 
 const randomVals: number[] = [];
 let newNumber = Math.ceil(Math.random() * MAX);
-while (randomVals.length < 10) {
+while (randomVals.length < 5) {
     while (data.includes(newNumber) || randomVals.includes(newNumber)) {
         newNumber = Math.ceil(Math.random() * MAX);
     }
@@ -267,5 +276,9 @@ while (randomVals[0]) {
     myTree.add(randomVals.pop());
 }
 
+myTree.prettyPrint();
+console.log(myTree.isBalanced());
+
+myTree.balance();
 myTree.prettyPrint();
 console.log(myTree.isBalanced());
