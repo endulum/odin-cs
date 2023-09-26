@@ -204,6 +204,25 @@ class Tree {
         }
     }
 
+    isBalanced(currentNode: TreeNode | null = this.root) {
+        if (!currentNode) {
+            return true;
+        } else {
+            const leftHeight = this.height(currentNode.leftNode);
+            const rightHeight = this.height(currentNode.rightNode);
+
+            if (
+                (Math.abs(leftHeight - rightHeight) <= 1) &&
+                (this.isBalanced(currentNode.leftNode)) &&
+                (this.isBalanced(currentNode.rightNode))
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     prettyPrint (node = this.root, prefix = "", isLeft = true) {
         if (!node) return;
 
@@ -219,9 +238,9 @@ class Tree {
     }
 }
 
-const MAX = 20;
+const MAX = 100;
 
-const data = new Array(30).fill(1)
+const data = new Array(10).fill(1)
                  .map(v => v * Math.ceil(Math.random() * MAX))
                  .sort((a, b) => a - b)
                  .filter(function(value, index, array) {
@@ -231,11 +250,22 @@ const data = new Array(30).fill(1)
 console.log(data);
 const myTree = new Tree(data);
 myTree.prettyPrint();
+console.log(myTree.isBalanced());
 
-// generate random existing number
-let dataPoint = data[Math.floor(Math.random() * data.length)];
+const randomVals: number[] = [];
+let newNumber = Math.ceil(Math.random() * MAX);
+while (randomVals.length < 10) {
+    while (data.includes(newNumber) || randomVals.includes(newNumber)) {
+        newNumber = Math.ceil(Math.random() * MAX);
+    }
+    randomVals.push(newNumber);
+}
 
-console.log(`Finding height of node ${dataPoint}...`);
-console.log(`The height is ${myTree.height(myTree.find(dataPoint))} edges.`);
-console.log(`Finding depth of node ${dataPoint}...`);
-console.log(`The depth is ${myTree.depth(myTree.find(dataPoint))} edges.`);
+console.log(`Adding values ${randomVals}...`);
+
+while (randomVals[0]) {
+    myTree.add(randomVals.pop());
+}
+
+myTree.prettyPrint();
+console.log(myTree.isBalanced());
