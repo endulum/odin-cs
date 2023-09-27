@@ -1,32 +1,56 @@
-type coord = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+type coordinate = [number, number];
 
-const movements = [
-    [1, 2],
-    [2, 1],
-    [-1, -2],
-    [-2, -1],
-    [-1, 2],
-    [-2, 1],
-    [1, -2],
-    [2, -1]
-]
+function knightMoves(start: coordinate, end: coordinate) {
+    const visited: coordinate[] = [];
+    const queue: [coordinate, coordinate[]][] = [];
 
-class Knight {
-    coords: [number, number];
-    nextMoves: [number, number][] = [];
+    const movements = [
+        [1, 2],
+        [2, 1],
+        [-1, -2],
+        [-2, -1],
+        [-1, 2],
+        [-2, 1],
+        [1, -2],
+        [2, -1]
+    ]
 
-    constructor(x:coord, y:coord) {
-        this.coords = [x, y];
-        
+    queue.push([start, [start]]);
+
+    while (queue.length > 0) {
+        const [currentCoords, traveledPath]: [coordinate, coordinate[]] = queue.shift()!;
+
+        if ((currentCoords[0] == end[0]) && (currentCoords[1] == end[1])) {
+            let success = `You made it in ${traveledPath.length} moves. Here's your path:\n`;
+
+            traveledPath.forEach(move => {
+                success += `[${move}]\n`;
+            });
+
+            return success;
+        }
+
+        visited.push(currentCoords);
+
+        const nextMoves: coordinate[] = [];
+
         movements.forEach(movement => {
             if (
-                !((movement[0] + x) > 7) && !((movement[0] + x < 0)) &&
-                !((movement[1] + y) > 7) && !((movement[1] + y < 0))
+                !((movement[0] + currentCoords[0]) > 7) && !((movement[0] + currentCoords[0] < 0)) &&
+                !((movement[1] + currentCoords[1]) > 7) && !((movement[1] + currentCoords[1] < 0))
             ) {
-                this.nextMoves.push([movement[0] + x, movement[1] + y]);
+                nextMoves.push([movement[0] + currentCoords[0], movement[1] + currentCoords[1]]);
+            }
+        })
+
+        nextMoves.forEach(move => {
+            if (visited.find(visit => (move[0] == visit[0]) && (move[1] == visit[1]))) {
+                return;
+            } else {
+                queue.push([move, [...traveledPath, move]]);
             }
         })
     }
-}
+} // https://stackfull.dev/graph-data-structure-in-typescript
 
-console.log(new Knight(3, 3).nextMoves);
+console.log(knightMoves([0,0],[7,7]));
